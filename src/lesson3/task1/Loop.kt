@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
 import kotlin.math.sqrt
@@ -8,13 +9,12 @@ import kotlin.math.sqrt
  *
  * Вычисление факториала
  */
-fun factorial(n: Int): Double {
-    var result = 1.0
-    for (i in 1..n) {
-        result = result * i // Please do not fix in master
-    }
-    return result
+fun factorial(n: Int): Double = if (n <= 1) {
+    1.0
+} else {
+    n * factorial(n - 1)
 }
+
 
 /**
  * Пример
@@ -38,7 +38,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n/2) {
+    for (m in 2..n / 2) {
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -74,7 +74,37 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int = if (n in 1..2) 1 else subFib(3, n, 1, 1)
+
+
+private fun subFib(i: Int, n: Int, first: Int, second: Int): Int = if (i == n) {
+    first + second
+} else {
+    subFib(i + 1, n, second, first + second)
+}
+
+
+/**
+ * fun fib(n: Int): Int {
+if (n == 1) {
+return 1
+}
+if (n == 2) {
+return 1
+}
+var res = 0
+var first = 1
+var second = 1
+for (i in 3..n) {
+res = first + second
+first = second
+second = res
+
+}
+return res
+}
+ */
+
 
 /**
  * Простая
@@ -105,7 +135,13 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    if (m < 2 || n < 2) return false
+    for (d in 2..(if (m > n) n else m)){
+        if (m % d == 0 && n % d == 0) return false
+    }
+    return true
+}
 
 /**
  * Простая
