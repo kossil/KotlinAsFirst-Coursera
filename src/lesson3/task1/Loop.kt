@@ -134,14 +134,26 @@ fun lcm(m: Int, n: Int): Int {
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var d = 2
+    while (n % d != 0) {
+        d++
+    }
+    return d
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var d = n - 1
+    while (n % d != 0) {
+        d--
+    }
+    return d
+}
 
 /**
  * Простая
@@ -165,7 +177,18 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (k in m..n) {
+        if (isIntSqrt(k)) return true
+    }
+    return false
+}
+
+private fun isIntSqrt(k: Int): Boolean {
+    val t = sqrt(k.toDouble())
+    return t - t.toInt() == 0.0
+}
+
 
 /**
  * Средняя
@@ -183,7 +206,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var k = 0
+    var xNew = x
+    while (xNew != 1) {
+        if (xNew % 2 == 0) {
+            xNew /= 2
+        } else {
+            xNew = 3 * xNew + 1
+        }
+        k++
+    }
+    return k
+}
 
 /**
  * Средняя
