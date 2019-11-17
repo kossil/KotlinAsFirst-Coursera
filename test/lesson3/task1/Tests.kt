@@ -206,6 +206,15 @@ class Tests {
 
     @Test
     @Tag("Normal")
+    fun digitFromNumber() {
+        assertEquals(4, digitFromNumber(13478, 3))
+        assertEquals(2, digitFromNumber(234, 3))
+        assertEquals(6, digitFromNumber(1236, 1))
+        assertEquals(5, digitFromNumber(5, 1))
+    }
+
+    @Test
+    @Tag("Normal")
     fun isPalindrome() {
         assertTrue(isPalindrome(3))
         assertFalse(isPalindrome(3653))

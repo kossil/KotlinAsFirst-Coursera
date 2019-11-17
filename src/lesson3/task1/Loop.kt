@@ -2,6 +2,8 @@
 
 package lesson3.task1
 
+import java.lang.Math.pow
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -129,6 +131,7 @@ fun lcm(m: Int, n: Int): Int {
     }
     return k
 }
+
 /**
  * Простая
  *
@@ -164,7 +167,7 @@ fun maxDivisor(n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     if (m < 2 || n < 2) return false
-    for (d in 2..(if (m > n) n else m)){
+    for (d in 2..(if (m > n) n else m)) {
         if (m % d == 0 && n % d == 0) return false
     }
     return true
@@ -227,7 +230,20 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var k = 1.0
+    var chlen = pow(x, k) / factorial(k.toInt())
+    var sum = 0.0
+    var d = 1
+    while (abs(chlen) >= abs(eps)) {
+        sum += chlen
+        k += 2.0
+        d *= -1
+        chlen = (pow(x, k) / factorial(k.toInt())) * d
+        if (chlen == Double.POSITIVE_INFINITY) return 0.0
+    }
+    return sum
+}
 
 /**
  * Средняя
@@ -236,7 +252,20 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var k = 0.0
+    var chlen = pow(x, k) / factorial(k.toInt())
+    var sum = 0.0
+    var d = 1
+    while (abs(chlen) >= abs(eps)) {
+        sum += chlen
+        k += 2.0
+        d *= -1
+        chlen = (pow(x, k) / factorial(k.toInt())) * d
+        if (chlen == Double.POSITIVE_INFINITY) return 1.0
+    }
+    return sum
+}
 
 /**
  * Средняя
@@ -245,7 +274,18 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    val digitCount = digitNumber(n)
+    var k = 1
+    var rez = 0.0
+    while (k <= digitCount) {
+        rez += digitFromNumber(n, k) * pow(10.0, digitCount.toDouble() - k)
+        k++
+    }
+    return rez.toInt()
+}
+
+fun digitFromNumber(n: Int, k: Int): Int = ((n % pow(10.0, k.toDouble())) / pow(10.0, k.toDouble() - 1)).toInt()
 
 /**
  * Средняя
