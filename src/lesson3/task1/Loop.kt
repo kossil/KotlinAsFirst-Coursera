@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import java.lang.Math.pow
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -285,6 +286,9 @@ fun revert(n: Int): Int {
     return rez.toInt()
 }
 
+/**
+ *  @return k-ю цифру из числа n
+ */
 fun digitFromNumber(n: Int, k: Int): Int = ((n % pow(10.0, k.toDouble())) / pow(10.0, k.toDouble() - 1)).toInt()
 
 /**
@@ -296,7 +300,19 @@ fun digitFromNumber(n: Int, k: Int): Int = ((n % pow(10.0, k.toDouble())) / pow(
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var left = digitNumber(n)
+    var right = 1
+
+    while (left > right) {
+        if (digitFromNumber(n, left) != digitFromNumber(n, right)) {
+            return false
+        }
+        left--
+        right++
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -306,7 +322,20 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var left = digitNumber(n)
+    while (left >= 1) {
+        var right = left
+        while (right >= 1) {
+            if (digitFromNumber(n, left) != digitFromNumber(n, right)) {
+                return true
+            }
+            right--
+        }
+        left--
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -317,7 +346,17 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var i = 1
+    var k = 0
+    var sqrI = sqr(i)
+    while (n > k) {
+        sqrI = sqr(i)
+        k += digitNumber(sqrI)
+        i++
+    }
+    return digitFromNumber(sqrI, k - n + 1)
+}
 
 /**
  * Сложная
@@ -328,4 +367,14 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var i = 1
+    var k = 0
+    var fibI = fib(i)
+    while (n > k) {
+        fibI = fib(i)
+        k += digitNumber(fibI)
+        i++
+    }
+    return digitFromNumber(fibI, k - n + 1)
+}
