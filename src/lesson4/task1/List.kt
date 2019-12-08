@@ -311,10 +311,13 @@ fun roman(n: Int): String {
 
         var curDigit = ""
         val d = curN % 5
+
+        if (curN in 5..8) {
+            curDigit += half
+        }
         when {
-            curN in 5..8 -> curDigit += "$s$half"
-            5 - curN == 1 -> curDigit += "$s$half"
-            5 - d == 1 -> curDigit += "$s$ten"
+            curN == 4 -> curDigit += "$s$half"
+            d == 4 -> curDigit += "$s$ten"
             else -> repeat(d) { curDigit += s }
         }
 
@@ -332,4 +335,95 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+
+    val digitCount = digitNumber(n)
+
+    var res = russianHundreds(n % 1000)
+    if (digitCount > 3) {
+        val thDig = digitFromNumber(n, 4)
+        val prThDig = if (digitCount > 4) digitFromNumber(n, 5) else null
+        res = (russianHundreds(n / 1000, true) + mutableListOf(
+                if (prThDig == 1) {
+                    "тысяч"
+                } else when (thDig) {
+                    1 -> "тысяча"
+                    in 2..4 -> "тысячи"
+                    else -> "тысяч"
+                }
+        ) + res).toMutableList()
+    }
+    return res.filterNot { it.isEmpty() }.joinToString(" ")
+}
+
+fun russianHundreds(n: Int, th: Boolean = false): MutableList<String> {
+    var res = mutableListOf<String>()
+    val curDigit = digitFromNumber(n, 1)
+    val digitCount = digitNumber(n)
+    val previousDigit = if (digitCount >= 2) digitFromNumber(n, 2) else null
+    val prePreviousDigit = if (digitCount >= 3) digitFromNumber(n, 3) else null
+    when {
+        digitCount == 1 -> res.add(numbers[curDigit].let {
+            if (th) it?.th.orEmpty() else it?.m.orEmpty()
+        })
+        previousDigit == 1 -> {
+            val tenNum = previousDigit * 10 + curDigit
+            res.add(numbers[tenNum]?.m.orEmpty())
+        }
+        previousDigit != null -> {
+            res.add(numbers[previousDigit * 10]?.m.orEmpty())
+            res.add(numbers[curDigit].let {
+                if (th) it?.th.orEmpty() else it?.m.orEmpty()
+            })
+        }
+    }
+    if (prePreviousDigit != null) {
+        res = (mutableListOf(numbers[prePreviousDigit * 100]?.m.orEmpty()) + res).toMutableList()
+    }
+    return res
+}
+
+private data class Num(val m: String, private val _thousands: String? = null) {
+    val th: String
+        get() = _thousands ?: m
+}
+
+private val numbers = mapOf(
+        1 to Num("один", "одна"),
+        2 to Num("два", "две"),
+        3 to Num("три"),
+        4 to Num("четыре"),
+        5 to Num("пять"),
+        6 to Num("шесть"),
+        7 to Num("семь"),
+        8 to Num("восемь"),
+        9 to Num("девять"),
+        10 to Num("десять"),
+        11 to Num("одинадцать"),
+        12 to Num("двенадцать"),
+        13 to Num("тринадцать"),
+        14 to Num("четырнадцать"),
+        15 to Num("пятнадцать"),
+        16 to Num("шестнадцать"),
+        17 to Num("семнадцать"),
+        18 to Num("восемнадцать"),
+        19 to Num("девятнадцать"),
+        20 to Num("двадцать"),
+        30 to Num("триджать"),
+        40 to Num("сорок"),
+        50 to Num("пятьдесят"),
+        60 to Num("шестьдесят"),
+        70 to Num("семьдесят"),
+        80 to Num("восемьдесят"),
+        90 to Num("девяносто"),
+        100 to Num("сто"),
+        200 to Num("двести"),
+        300 to Num("триста"),
+        400 to Num("четыреста"),
+        500 to Num("пятьсот"),
+        600 to Num("шестьсот"),
+        700 to Num("семсот"),
+        800 to Num("восемьсот"),
+        900 to Num("девятьсот"),
+        1000 to Num("тысяча", "тысячи")
+)
