@@ -178,7 +178,17 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    return stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
+    /*val stuffKind = stuff.filter { it.value.first == kind }
+    var min: Map.Entry<String, Pair<String, Double>>? = null
+    for (stuffKindItem in stuffKind) {
+        if (min == null || min.value.second > stuffKindItem.value.second) {
+            min = stuffKindItem
+        }
+    }
+    return min?.key*/
+}
 
 /**
  * Сложная
@@ -220,7 +230,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TODO()
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
+    for (itemB in b) {
+        val valueA = a[itemB.key]
+        if (valueA != null && valueA == itemB.value) {
+            a.remove(itemB.key)
+        }
+    }
+}
 
 /**
  * Простая
