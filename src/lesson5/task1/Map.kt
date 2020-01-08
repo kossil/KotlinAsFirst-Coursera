@@ -214,7 +214,31 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val rezFriends = mutableMapOf<String, Set<String>>()
+    for (owner in friends.keys) {
+        val allOwnerFriends = mutableSetOf<String>()
+        allFriends(allOwnerFriends, owner, owner, friends)
+        rezFriends[owner] = allOwnerFriends
+        for (leftFriend in allOwnerFriends) {
+            if (leftFriend !in friends.keys) {
+                rezFriends[leftFriend] = setOf()
+            }
+        }
+    }
+    return rezFriends
+}
+
+private fun allFriends(allOwnerFriends: MutableSet<String>, rootOwner: String, owner: String, friends: Map<String, Set<String>>) {
+    val ownerFriends = friends[owner] ?: return
+    for (ownerFriend in ownerFriends) {
+        if (ownerFriend !in allOwnerFriends && rootOwner != ownerFriend) {
+            allOwnerFriends.add(ownerFriend)
+            allFriends(allOwnerFriends, rootOwner, ownerFriend, friends)
+        }
+    }
+}
+
 
 /**
  * Простая
@@ -246,7 +270,21 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val listClone = mutableListOf<String>()
+    var minList = a
+    var maxList = b
+    if (b.size < a.size) {
+        minList = b
+        maxList = a
+    }
+    for (minEl in minList) {
+        if (minEl in maxList && minEl !in listClone) {
+            listClone.add(minEl)
+        }
+    }
+    return listClone
+}
 
 /**
  * Средняя
