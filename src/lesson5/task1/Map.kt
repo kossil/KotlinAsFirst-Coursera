@@ -295,7 +295,15 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String) = chars.containsAll(word.toList())
+/*for (symbol in word) {
+        if (symbol !in chars) {
+            return false
+        }
+    }
+    return true
+}*/
+
 
 /**
  * Средняя
@@ -309,7 +317,13 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    for (symbol in list) {
+        res[symbol] = res.getOrDefault(symbol, 0) + 1
+    }
+    return res.filter { it.value > 1 }
+}
 
 /**
  * Средняя
@@ -320,7 +334,16 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    for (word in words) {
+        for (wordC in words) {
+            if (word != wordC && canBuildFrom(word.toList(), wordC)) {
+                return true
+            }
+        }
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -339,7 +362,16 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    list.forEachIndexed { index, it ->
+        for (index2 in (index + 1) until list.size) {
+            if (it + list[index2] == number) {
+                return Pair(index, index2)
+            }
+        }
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная
@@ -360,4 +392,42 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val goods = treasures.filter { it.value.first <= capacity }
+    if (goods.isEmpty()) {
+        return emptySet()
+    }
+    val sorted = goods.toList().sortedBy { it.second.first }.toMap()
+    val bag = mutableListOf<Pair<String, Pair<Int, Int>>>()
+    var curCapacity = capacity
+    val floor = mutableListOf<Pair<String, Pair<Int, Int>>>()
+    for (good in sorted) {
+        if (good.value.first <= curCapacity) {
+            bag.add(Pair(good.key, good.value))
+            curCapacity -= good.value.first
+        } else {
+            floor.add(Pair(good.key, good.value))
+        }
+    }
+    //var goodsCountForReplace = 1
+    val indexesToRemove = mutableListOf<Int>()
+    for(hren in floor) {
+        for (i in bag.toList().indices) {
+            for (j in (bag.size - 1)..0) {
+                val items = bag.toList().subList(i, j)
+                if (hren.second.first <= items.sumBy { it.second.first } &&
+                        hren.second.second > items.sumBy { it.second.second }) {
+                    bag.add(hren)
+                    indexesToRemove.addAll(i..j)
+                    break
+                }
+            }
+            if (indexesToRemove.isNotEmpty()) {
+                break
+            }
+        }
+        indexesToRemove.forEach { bag.removeAt(it) }
+        indexesToRemove.clear()
+    }
+    return bag.map { it.first }.toSet()
+}
