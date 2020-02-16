@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -49,12 +51,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -71,7 +71,44 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val parts = str.split(" ")
+    if (parts.count() != 3) {
+        return ""
+    }
+    val day = parts[0].toIntOrNull() ?: return ""
+    if (day !in 1..31) {
+        return ""
+    }
+    val month = parts[1]
+    if (month !in months.keys) {
+        return ""
+    }
+    val year = parts[2].toIntOrNull() ?: return ""
+    if (year < 0) {
+        return ""
+    }
+    val daysInMonth = daysInMonth(months.getValue(month).toInt(), year)
+    if (day > daysInMonth) {
+        return ""
+    }
+    return String.format("%02d.${months.getValue(month)}.%04d", day, year)
+}
+
+private val months = mapOf(
+        "января" to "01",
+        "февраля" to "02",
+        "марта" to "03",
+        "апреля" to "04",
+        "мая" to "05",
+        "июня" to "06",
+        "июля" to "07",
+        "августа" to "08",
+        "сентября" to "09",
+        "октября" to "10",
+        "ноября" to "11",
+        "декабря" to "12"
+)
 
 /**
  * Средняя
