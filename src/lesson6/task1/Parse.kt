@@ -120,7 +120,30 @@ private val months = mapOf(
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val parts = digital.split(".")
+    if (parts.count() != 3) {
+        return ""
+    }
+    val day = parts[0].toIntOrNull() ?: return ""
+    if (day !in 1..31) {
+        return ""
+    }
+    val month = parts[1]
+    if (month !in months.values) {
+        return ""
+    }
+    val year = parts[2].toIntOrNull() ?: return ""
+    if (year < 0) {
+        return ""
+    }
+    val daysInMonth = daysInMonth(month.toInt(), year)
+    if (day > daysInMonth) {
+        return ""
+    }
+    val monthDigit = months.toList().firstOrNull { it.second == month }?.first ?: return ""
+    return String.format("$day $monthDigit $year")
+}
 
 /**
  * Средняя
@@ -134,7 +157,25 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val symbolsToReplace = listOf(" ", "-", "(", ")")
+    val positivSymbols = "+0123456789"
+    var phoneNew = phone
+    //val phoneNew = phone.let { ph -> symbolsToReplace.forEach { ph.replace(it, "") } }
+    for (s in symbolsToReplace) {
+        phoneNew = phoneNew.replace(s, "")
+    }
+    for (c in phoneNew) {
+        if (c !in positivSymbols) {
+            return ""
+        }
+    }
+    val phonePlusesLength = phoneNew.filter { it == '+' }.length
+    if (phonePlusesLength > 1 || (phonePlusesLength == 1 && !phoneNew.startsWith('+'))) {
+        return ""
+    }
+    return phoneNew
+}
 
 /**
  * Средняя
