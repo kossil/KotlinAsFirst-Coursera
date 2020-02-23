@@ -187,7 +187,21 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val steps = jumps.split(" ")
+    var bestJump = -1
+    for (step in steps) {
+        val curStep = step.toIntOrNull()
+        if (curStep != null && curStep > bestJump) {
+            bestJump = curStep
+        } else if (curStep == null) {
+            if (step !in listOf("-", "%")) {
+                return -1
+            }
+        }
+    }
+    return bestJump
+}
 
 /**
  * Сложная
@@ -199,7 +213,26 @@ fun bestLongJump(jumps: String): Int = TODO()
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val steps = jumps.split(" ")
+    if (steps.count() % 2 != 0) {
+        return -1
+    }
+    var bestJump = -1
+    var idx = 0
+    while (idx < steps.count() - 1) {
+        val step = steps[idx]
+        val curStep = step.toIntOrNull()
+        val nextStep = steps[idx + 1]
+        if (curStep != null && curStep > bestJump && nextStep == "+") {
+            bestJump = curStep
+        } else if (curStep == null && step.any { it !in listOf('-', '%', '+') }) {
+            return -1
+        }
+        idx += 2
+    }
+    return bestJump
+}
 
 /**
  * Сложная
@@ -210,7 +243,32 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val steps = expression.split(" ")
+    if (steps.count() % 2 == 0) {
+        throw IllegalArgumentException()
+    }
+    var summ = steps.first().getIntWithoutSymbols()
+    var i = 1
+    while (i < steps.count() - 1) {
+        val step = steps[i]
+        val nextStep = steps[i + 1].getIntWithoutSymbols()
+        when (step){
+            "+" -> summ += nextStep
+            "-" -> summ -= nextStep
+            else -> throw IllegalArgumentException()
+        }
+        i += 2
+    }
+    return summ
+}
+
+private fun String.getIntWithoutSymbols(): Int {
+    if (first().toString().toIntOrNull() == null) {
+        throw IllegalArgumentException()
+    }
+    return toIntOrNull() ?: throw IllegalArgumentException()
+}
 
 /**
  * Сложная
