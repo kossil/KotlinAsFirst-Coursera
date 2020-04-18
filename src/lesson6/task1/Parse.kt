@@ -368,4 +368,62 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val res: MutableList<Int> = mutableListOf()
+    val finalRes: MutableList<Int> = mutableListOf()
+    repeat(cells) { res.add(0) }
+    if (commands.any { it !in " ><+-[]" } || commands.count { it == '[' } != commands.count { it == ']' }) {
+        throw IllegalArgumentException()
+    }
+    var curIdx = cells / 2
+
+    val openedCommandIdxes = mutableListOf<Pair<Int, Int>>()// индекс, значение датчика
+    var executedCommandsCount = 0
+    var curCommandIdx = 0
+    while (curCommandIdx < commands.count()) {
+        when (commands[curCommandIdx]) {
+            ' ' -> {
+            }
+            '>' -> {
+                if (openedCommandIdxes.lastOrNull()?.second != 0) {
+                    curIdx++
+                    if (curIdx >= res.count() || curIdx < 0) {
+                        throw IllegalStateException()
+                    }
+                }
+            }
+            '<' -> {
+                if (openedCommandIdxes.lastOrNull()?.second != 0) {
+                    curIdx--
+                    if (curIdx >= res.count() || curIdx < 0) {
+                        throw IllegalStateException()
+                    }
+                }
+            }
+            '+' -> if (openedCommandIdxes.lastOrNull()?.second != 0) {
+                res[curIdx]++
+            }
+            '-' -> if (openedCommandIdxes.lastOrNull()?.second != 0) {
+                res[curIdx]--
+            }
+            '[' -> if (openedCommandIdxes.lastOrNull()?.second != 0) {
+                openedCommandIdxes.add(Pair(curCommandIdx, res[curIdx]))
+            }
+            ']' -> if (res[curIdx] != 0) {
+                curCommandIdx = openedCommandIdxes.last().first
+            } else {
+                openedCommandIdxes.removeAt(openedCommandIdxes.count() - 1)
+            }
+            else -> throw IllegalArgumentException()
+        }
+        if (openedCommandIdxes.lastOrNull()?.second != 0) {
+            executedCommandsCount++
+        }
+        curCommandIdx++
+        if (executedCommandsCount <= limit) {
+            finalRes.clear()
+            finalRes.addAll(res)
+        }
+    }
+    return finalRes
+}
