@@ -253,7 +253,7 @@ fun plusMinus(expression: String): Int {
     while (i < steps.count() - 1) {
         val step = steps[i]
         val nextStep = steps[i + 1].getIntWithoutSymbols()
-        when (step){
+        when (step) {
             "+" -> summ += nextStep
             "-" -> summ -= nextStep
             else -> throw IllegalArgumentException()
@@ -279,7 +279,18 @@ private fun String.getIntWithoutSymbols(): Int {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val words = str.split(" ")
+    if (words.count() < 2) return -1
+    for (i in 0 until words.count() - 1) {
+        val word = words[i]
+        val nextWord = words[i + 1]
+        if (word.toLowerCase() == nextWord.toLowerCase()) {
+            return words.filterIndexed { index, _ -> index < i }.sumBy { it.count() } + i
+        }
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -292,7 +303,21 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val goods = description.split("; ")
+    var maxGood = "" //название товара с максимальной ценой
+    var maxPrice = 0.0 //максимальная цена товара
+    for (good in goods) {
+        val parts = good.split(" ")
+        if (parts.count() != 2) return ""
+        val price = parts[1].toDoubleOrNull() ?: return ""
+        if (price >= maxPrice) {
+            maxPrice = price
+            maxGood = parts.first()
+        }
+    }
+    return maxGood
+}
 
 /**
  * Сложная
