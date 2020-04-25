@@ -32,8 +32,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
                 if (word.length + currentLineLength >= lineLength) {
                     outputStream.newLine()
                     currentLineLength = 0
-                }
-                else {
+                } else {
                     outputStream.write(" ")
                     currentLineLength++
                 }
@@ -54,7 +53,32 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val file = File(inputName)
+    val text = file.readText().toLowerCase()
+    val map = mutableMapOf<String, Int>()
+    for (substring in substrings) {
+        map[substring] = 0
+        val length = substring.length
+        if (text.length < length) {
+            continue
+        }
+        var idxStart = 0
+        var idxEnd = length
+        while (idxEnd <= text.length) {
+            val textSubstring = text.substring(idxStart, idxEnd)
+            if (textSubstring == substring.toLowerCase()) {
+                map[substring] = map[substring]!! + 1
+                idxStart += length
+                idxEnd += length
+            } else {
+                idxStart += 1
+                idxEnd += 1
+            }
+        }
+    }
+    return map
+}
 
 
 /**
