@@ -72,8 +72,8 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
                 idxStart += length
                 idxEnd += length
             } else {
-                idxStart += 1
-                idxEnd += 1
+                idxStart++
+                idxEnd++
             }
         }
     }
@@ -95,8 +95,69 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val fileIn = File(inputName)
+    val fileOutWriter = File(outputName).bufferedWriter()
+    for (line in fileIn.readLines()) {
+        var res = line
+        for ((first, second) in RULES) {
+            res = res.replace(first, second)
+        }
+        fileOutWriter.write(res)
+        fileOutWriter.newLine()
+    }
+    fileOutWriter.close()
 }
+
+private val RULES = listOf(
+        "жы" to "жи",
+        "жя" to "жа",
+        "жю" to "жу",
+        "Жы" to "Жи",
+        "Жя" to "Жа",
+        "Жю" to "Жу",
+        "жЫ" to "жИ",
+        "жЯ" to "жА",
+        "жЮ" to "жУ",
+        "ЖЫ" to "ЖИ",
+        "ЖЯ" to "ЖА",
+        "ЖЮ" to "ЖУ",
+        "чы" to "чи",
+        "чя" to "ча",
+        "чю" to "чу",
+        "Чы" to "Чи",
+        "Чя" to "Ча",
+        "Чю" to "Чу",
+        "чЫ" to "чИ",
+        "чЯ" to "чА",
+        "чЮ" to "чУ",
+        "ЧЫ" to "ЧИ",
+        "ЧЯ" to "ЧА",
+        "ЧЮ" to "ЧУ",
+        "шы" to "ши",
+        "шя" to "ша",
+        "шю" to "шу",
+        "Шы" to "Ши",
+        "Шя" to "Ша",
+        "Шю" to "Шу",
+        "шЫ" to "шИ",
+        "шЯ" to "шА",
+        "шЮ" to "шУ",
+        "ШЫ" to "ШИ",
+        "ШЯ" to "ША",
+        "ШЮ" to "ШУ",
+        "щы" to "щи",
+        "щя" to "ща",
+        "щю" to "щу",
+        "Щы" to "Щи",
+        "Щя" to "Ща",
+        "Щю" to "Щу",
+        "щЫ" to "щИ",
+        "щЯ" to "щА",
+        "щЮ" to "щУ",
+        "ЩЫ" to "ЩИ",
+        "ЩЯ" to "ЩА",
+        "ЩЮ" to "ЩУ"
+)
 
 /**
  * Средняя
