@@ -177,7 +177,18 @@ private val RULES = listOf(
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val fileIn = File(inputName)
+    val fileWriter = File(outputName).bufferedWriter()
+    val lines = fileIn.readLines().map { it.trim() }
+    val maxLength = lines.maxBy { it.length }!!.length
+    for (line in lines) {
+        val spaceCount = (maxLength - line.count()) / 2
+        var spaces = ""
+        repeat(spaceCount) { spaces += " " }
+        fileWriter.write(spaces + line)
+        fileWriter.newLine()
+    }
+    fileWriter.close()
 }
 
 /**
